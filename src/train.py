@@ -105,4 +105,10 @@ def flexible_training(
     registered_model_version = mlflow.register_model(model_uri, model_name)
 
     print(f"Model registered: {model_name}, version: {registered_model_version.version}")
-    return model_uri
+    result = {
+        'model_uri' : model_uri, 
+        'registered_model_name' : model_name, 
+        'registered_model_version' : registered_model_version,
+        'run_id' : run_id
+    } 
+    return result

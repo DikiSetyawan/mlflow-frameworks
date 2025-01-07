@@ -76,7 +76,7 @@ def flexible_training(
         model_name = 'Linear_regression_model_awal',
         test_size = 0.2, 
         random_state = 42, 
-        run_name = f"Linear_regression_model_awal{get_current_time()}",
+        run_name = f"Linear_regression{get_current_time()}",
         fit_intercept = True, 
         n_jobs = 2
 ) :
@@ -91,6 +91,7 @@ def flexible_training(
             n_jobs = n_jobs,
         )
 
+        model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
@@ -100,10 +101,8 @@ def flexible_training(
         mlflow.sklearn.log_model(model, model_name)
         run_id = run.info.run_id
     
-    model_uri = f"runs:/{run_id}/outputs/{model_name}"
-    version_timestampt = get_current_time()
-    registered_model_name = f"{model_name}{version_timestampt}"
-    registered_model_version = mlflow.register_model(model_uri, registered_model_name)
+    model_uri = f"runs:/{run_id}/{model_name}"
+    registered_model_version = mlflow.register_model(model_uri, model_name)
 
-    print(f"Model registered: {registered_model_name}, version: {registered_model_version.version}")
-    return registered_model_name, registered_model_version.version
+    print(f"Model registered: {model_name}, version: {registered_model_version.version}")
+    return model_uri

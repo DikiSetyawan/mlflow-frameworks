@@ -70,4 +70,40 @@ def train_and_log_model (df, test_data_path, model_name = "Linear_regression_mod
     return registered_model_name, registered_model_version.version
 
 
-def flexible_trained_with_parameter():
+def flexible_training(
+        df, 
+        path, 
+        model_name = 'Linear_regression_model_awal',
+        test_size = 0.2, 
+        random_state = 42, 
+        run_name = f"Linear_regression_model_awal{get_current_time()}",
+        fit_intercept = True, 
+        n_jobs = 2
+) :
+    
+    X_train,X_test, y_train, y_test = feature_selection_and_engineering(df, test_size=test_size, random_state=random_state)
+
+    run_name = run_name
+
+    with mlflow.start_run(run_name=run_name) as run : 
+        model = LinearRegression(
+            fit_intercept=fit_intercept,
+            n_jobs = n_jobs,
+        )
+
+        y_pred = model.predict(X_test)
+        mse = mean_squared_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+        mlflow.log_metric('mse', mse)
+        mlflow.log_metric('r2', r2)
+
+        mlflow.sklearn.log_model(model, model_name)
+        run_id = run.info.run_id
+    
+    model_uri = f"runs:/{run_id}/outputs/{model_name}"
+    version_timestampt = get_current_time()
+    registered_model_name = f"{model_name}{version_timestampt}"
+    registered_model_version = mlflow.register_model(model_uri, registered_model_name)
+
+    print(f"Model registered: {registered_model_name}, version: {registered_model_version.version}")
+    return registered_model_name, registered_model_version.version

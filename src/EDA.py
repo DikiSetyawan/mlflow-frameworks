@@ -6,6 +6,40 @@ from sklearn.model_selection import train_test_split
 def load_data(path):
     return pd.read_csv(path)
 
+def split_dataset_pandas(df, train_ratio=0.7, test_ratio=0.2, valid_ratio=0.1, random_state=42):
+  """
+  Splits a pandas DataFrame into train, test, and validation sets.
+
+  Args:
+    df: The input pandas DataFrame.
+    train_ratio: Proportion of data for the training set (default: 0.7).
+    test_ratio: Proportion of data for the test set (default: 0.2).
+    valid_ratio: Proportion of data for the validation set (default: 0.1).
+    random_state: Seed for random number generator (default: 42).
+
+  Returns:
+    A tuple containing the training, test, and validation DataFrames.
+  """
+
+  if not 0 <= train_ratio <= 1 or not 0 <= test_ratio <= 1 or not 0 <= valid_ratio <= 1:
+    raise ValueError("Ratios must be between 0 and 1.")
+
+  if abs(train_ratio + test_ratio + valid_ratio - 1) > 1e-6:
+    raise ValueError("Ratios must sum to 1.")
+
+  # Shuffle the DataFrame
+  df = df.sample(frac=1, random_state=random_state)
+
+  total_size = len(df)
+  train_size = int(train_ratio * total_size)
+  test_size = int(test_ratio * total_size)
+
+  train_df = df.iloc[:train_size].to_csv('/home/dikidwidasa/mlflow/data/train.csv',index = False)
+  test_df = df.iloc[train_size:train_size + test_size].to_csv('/home/dikidwidasa/mlflow/data/test.csv', index = False)
+  valid_df = df.iloc[train_size + test_size:].to_csv('/home/dikidwidasa/mlflow/data/valid.csv', index = False)
+
+  return None
+
 def mapping(df, colsname, map_var):
     df[colsname] = df[colsname].map(map_var)
     return df

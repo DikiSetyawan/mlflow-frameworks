@@ -11,7 +11,6 @@ mappings = {
 
 
 mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_experiment("monitoringFlow")
 mlflow.autolog()
 
 
@@ -19,6 +18,7 @@ mlflow.autolog()
 #model_name = 'Linear_regression_model_awal'
 
 def monitor_model(model_uri):
+    mlflow.set_experiment("monitoringFlow")
     data = pd.read_csv('/home/dikidwidasa/mlflow/data/dummy_data.csv')
     for col, map_dict in mappings.items():
         data = mapping(data, col, map_dict)

@@ -150,6 +150,10 @@ def training_xg(
         mlflow.log_metric('mse', mse)
         mlflow.log_metric('r2', r2)
         mlflow.xgboost.log_model(xgb_model, model_name)
+        # model_file_path = f'{model_name}.pkl'
+        # with open(model_file_path, "wb") as f:
+        #     mlflow.log_artifact(model_file_path)
+        
         run_id = run.info.run_id
 
         model_uri = f"runs:/{run_id}/{model_name}"
@@ -163,4 +167,5 @@ def training_xg(
             'run_id' : run_id
         } 
     return result
+
 

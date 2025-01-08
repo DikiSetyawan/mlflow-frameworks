@@ -1,15 +1,27 @@
 from src.train import *
 from src.monitor import *
 
+
+
+
 if __name__ == "__main__":
-    test_data_path = "/home/dikidwidasa/mlflow/data/test_energy_data.csv"
-    df = load_and_preprocess(test_data_path)
-    #train_and_log_model(df, test_data_path)
-    model_uri =flexible_training(df, test_data_path)
-    #print(model_uri)
-    #model_uri = 'runs:/533e369df5164901a580e5ec0b375d1f/Linear_regression_model_awal'
-    monitor_model(model_uri)
-    #mlflow.sklearn.load_model(model_uri)
+    linear = flexible_training(
+        model_name = 'Linear_regression',
+        run_name = f"Linear_regression{get_current_time()}",
+        fit_intercept = True, 
+        n_jobs = 2
+    )
+    
 
-    #monitor_model("Linear_regression_model_awal")
+    xgboost = training_xg(
+        model_name = 'Xgboost_regression',
+        n_estimators = 100,
+        max_depth = 3,
+        learning_rate = 0.1,
+        run_name = f"Xgboost_regression{get_current_time()}"
+    )
 
+    monitor_model_xgboost(xgboost['model_uri'])
+    monitor_model_generic(linear['model_uri'])
+
+    

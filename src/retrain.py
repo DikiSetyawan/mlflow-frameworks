@@ -1,6 +1,5 @@
 from src.train import *
-
-
+#from train import *
 import mlflow 
 
 mlflow.set_tracking_uri("http://localhost:5000")
@@ -57,14 +56,23 @@ def get_latest_model(exp_name):
 
 
 
+def retraining(expname): 
+    best_model = get_best_model(expname)
+    print(best_model)
+    #mlflow.register_model(best_model['artifact_uri'], best_model['model_name'])
+    last_model = get_latest_model(expname)
+    print(last_model)
+    if best_model['mse'] < last_model['mse']:    
+        return {f"model doesnt need to be retrained"}
+    else:
+        
+        flexible_training()
+        training_xg()
+        return {f"model retrained"}
 
-# def retraining(expname): 
-#     best_model = get_best_model(expname)
-#     #mlflow.register_model(best_model['artifact_uri'], best_model['model_name'])
-#     last_model = get_latest_model(expname)
-#     if best_model['mse'] < last_model['mse']:   
 
 
-
+x = retraining("testingMlflow")
+print(x)
 
 

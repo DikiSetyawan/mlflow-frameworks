@@ -65,7 +65,6 @@ def retraining(expname):
     if best_model['mse'] < last_model['mse']:    
         return {f"model doesnt need to be retrained"}
     else:
-        
         flexible_training()
         training_xg()
         return {f"model retrained"}
